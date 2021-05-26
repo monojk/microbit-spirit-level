@@ -12,7 +12,7 @@
 """
 
 from microbit import *
-from math     import atan, degrees, tan, radians
+from math     import atan2, degrees, tan, radians
 
 calibrate  = 0
 what       = 1
@@ -28,23 +28,27 @@ while True:
     x = x / iterations
     y = y / iterations
     z = z / iterations
-    if (z-x) == 0 :
-        Steigung = 999
-        Winkel   = 90
-    else :
-        Steigung = int( - y / (z-x) * 100 )
-        Winkel   = int(degrees(atan( - y / (z-x) )))
+
+     if (z-x) == 0 :
+         Steigung = 999
+    else:
+        Steigung = int( -y / (z-x) * 100 )
+    Winkel = int(degrees(atan2( -y, z-x )))
+
     if button_a.was_pressed() :
         calibrate = Winkel
     elif button_b.was_pressed():
         what = -what
+
     FinalWinkel = Winkel - calibrate
     FinalSteigung = int(tan(radians(FinalWinkel))*100)
     print("x={0}  y={1}  z={2}  Steigung={3}%  Winkel={4}  FinalWinkel={5}  FinalSteigung={6}%".format(x, y, z, Steigung, Winkel, FinalWinkel, FinalSteigung))
+
     if what < 0 :
         display.scroll("{0}".format(FinalWinkel))
     else :
         display.scroll("{0}%".format(FinalSteigung))
+
     sleep(500)
 
 display.clear()
